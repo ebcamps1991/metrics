@@ -51,9 +51,7 @@ class AwsCreator(MetricCreator):
 
 
 class StatsDCreator(MetricCreator):
-    """
-    Note Comment.
-    """
+    """This creator can stay independent of concrete statsd client."""
 
     def factory_client(self) -> StatsDMetricClient:
         return StatsDMetricClient()
@@ -85,7 +83,7 @@ class MetricClient(ABC):
 
 # noinspection PyAttributeOutsideInit
 class AwsMetricClient(MetricClient):
-    """This Client is the concrete implementation for aws client."""
+    """This client is the concrete implementation for aws client."""
 
     @property
     def client(self) -> BaseClient:
@@ -124,7 +122,7 @@ class AwsMetricClient(MetricClient):
 
 # noinspection PyAttributeOutsideInit
 class StatsDMetricClient(MetricClient):
-    """This Client is the concrete implementation for statsd client."""
+    """This client is the concrete implementation for statsd client."""
 
     @property
     def client(self) -> StatsClient:
