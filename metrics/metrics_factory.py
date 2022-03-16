@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any
@@ -17,9 +16,7 @@ class MetricCreator(ABC):
     """
 
     @abstractmethod
-    def factory_client(self) -> Any:
-        """Default implementation of the factory client."""
-        pass
+    def factory_client(self) -> Any: ...
 
     def send_collector_crawl_metric(self,
                                     collector_name: str,
@@ -64,8 +61,7 @@ class MetricClient(ABC):
     """
     @property
     @abstractmethod
-    def client(self) -> Any:
-        """Initialize an instance from metric client."""
+    def client(self) -> Any: ...
 
     @abstractmethod
     def send_collector_metric(self,
@@ -78,7 +74,7 @@ class MetricClient(ABC):
         :param str env_name: Environment that is sending the metric.
         :return:
         """
-        pass
+        ...
 
 
 # noinspection PyAttributeOutsideInit
@@ -87,6 +83,7 @@ class AwsMetricClient(MetricClient):
 
     @property
     def client(self) -> BaseClient:
+        """Returns CloudWatch client."""
         try:
             return self._client  # type: ignore
         except AttributeError:
@@ -96,7 +93,13 @@ class AwsMetricClient(MetricClient):
     def send_collector_metric(self,
                               collector_name: str,
                               env_name: str = 'dev') -> None:
+        """
+        Sending of the counter metric via the statsd client.
 
+        :param str collector_name: Name of collector to be used as value.
+        :param str env_name: Environment name.
+        :return None
+        """
         self.client.put_metric_data(
             Namespace='Collector-Metrics',
             MetricData=[
@@ -126,6 +129,7 @@ class StatsDMetricClient(MetricClient):
 
     @property
     def client(self) -> StatsClient:
+        """Returns statsD client."""
         try:
             return self._client
         except AttributeError:
@@ -135,5 +139,11 @@ class StatsDMetricClient(MetricClient):
     def send_collector_metric(self,
                               collector_name: str,
                               env_name: str = 'dev') -> None:
+        """
+        Sending of the counter metric via the statsd client.
 
+        :param str collector_name: Name of collector to be used as label.
+        :param str env_name: Environment name.
+        :return None
+        """
         self.client.incr(f'collector_crawl.{collector_name}')
