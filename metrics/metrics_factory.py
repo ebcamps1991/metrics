@@ -41,14 +41,14 @@ class MetricCreator(ABC):
 
 
 class AwsCreator(MetricCreator):
-    """This creator can stay independent of concrete aws client."""
+    """This creator implement a concrete class for aws."""
 
     def factory_client(self) -> AwsMetricClient:
         return AwsMetricClient()
 
 
 class StatsDCreator(MetricCreator):
-    """This creator can stay independent of concrete statsd client."""
+    """This creator implement concrete class for statsd."""
 
     def factory_client(self) -> StatsDMetricClient:
         return StatsDMetricClient()
